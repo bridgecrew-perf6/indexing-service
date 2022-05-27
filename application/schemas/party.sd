@@ -1,0 +1,21 @@
+schema party {
+    document party {
+        field party_id type string {
+            indexing: summary | index
+            match:word
+            rank:filter
+        }
+        field title type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field location type position {
+            indexing: attribute
+        }
+    }
+    document-summary party_id {
+        summary party_id type string { 
+            source: party_id
+        }
+    }
+}

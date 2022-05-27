@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright Yahoo. Licensed under the terms of the Apache 2.0 license. See LICENSE in the project root. -->
+<services version="1.0" xmlns:deploy="vespa" xmlns:preprocess="properties">
+
+  <container id='default' version='1.0'>
+    <search></search>
+    <document-api></document-api>
+    <nodes>
+      <node hostalias='node1'></node>
+    </nodes>
+  </container>
+
+  <content id='users' version='1.0'>
+      <engine>
+        <proton>
+            <tuning>
+                <searchnode>
+                    <requestthreads>
+                        <persearch>2</persearch>
+                    </requestthreads>
+                </searchnode>
+            </tuning>
+        </proton>
+    </engine>
+    <redundancy>1</redundancy>
+    <documents>
+      <document type='user' mode="index"/>
+      <document type='party' mode="index"/>
+    </documents>
+    <nodes>
+      <node hostalias="node1" distribution-key="0" />
+    </nodes>
+  </content>
+
+</services>

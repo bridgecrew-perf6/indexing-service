@@ -1,0 +1,47 @@
+schema user {
+    document user {
+        field user_id type string {
+            indexing: summary | index
+            match: word
+            rank: filter
+        }
+        field username type string {
+            indexing: summary | attribute
+            attribute: fast-search
+            match: prefix
+        }
+        field firstname type string {
+            indexing: summary | attribute
+            attribute: fast-search 
+            match: prefix
+        }
+        field lastname type string {
+            indexing: summary | attribute
+            attribute: fast-search
+            match: prefix 
+        }
+        field id type tensor<int8>(user_id{}) {
+            indexing: summary | attribute
+            attribute: fast-search
+        }
+    }
+    fieldset default {
+      fields: firstname, lastname, username
+    }
+
+    document-summary user_id {
+        summary user_id type string { 
+            source: user_id
+        }
+    }
+
+    rank-profile friend inherits default {
+      function social() {
+        expression: sum(query(friends) * attribute(id)) 
+      } 
+      first-phase {
+        expression: 2*social() + nativeRank(username) + nativeRank(firstname) + nativeRank(lastname)
+      }
+      match-features: social() nativeRank(username) nativeRank(firstname) nativeRank(lastname)
+    }
+}
